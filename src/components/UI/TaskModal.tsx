@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import type { Task, Priority } from '../../types/task'
-import { PRIORITY_COLORS, COLUMNS } from '../../types/task'
+import { COLUMNS } from '../../types/task'
+import { StatusTag } from '../UI/StatusTag'
 
 interface TaskModalProps {
   readonly task: Task | null
@@ -12,22 +13,29 @@ interface TaskModalProps {
 
 export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskModalProps) {
   const [isEditing, setIsEditing] = useState(false)
-  const [editedTask, setEditedTask] = useState<Partial<Task>>({})
+  const [editOverrides, setEditOverrides] = useState<Partial<Task>>({})
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const prevTaskIdRef = useRef<string | null>(null)
 
-  useEffect(() => {
-    if (task) {
-      setEditedTask({
-        title: task.title,
-        priority: task.priority,
-        dueDate: task.dueDate,
-        assignee: task.assignee,
-        progress: task.progress,
-      })
+  // Reset editing state when task changes (without setState in effect)
+  if (task?.id !== prevTaskIdRef.current) {
+    prevTaskIdRef.current = task?.id ?? null
+    if (isEditing) setIsEditing(false)
+    if (showDeleteConfirm) setShowDeleteConfirm(false)
+    if (Object.keys(editOverrides).length > 0) setEditOverrides({})
+  }
+
+  const editedTask = useMemo<Partial<Task>>(() => {
+    if (!task) return {}
+    return {
+      title: task.title,
+      priority: task.priority,
+      dueDate: task.dueDate,
+      assignee: task.assignee,
+      progress: task.progress,
+      ...editOverrides,
     }
-    setIsEditing(false)
-    setShowDeleteConfirm(false)
-  }, [task])
+  }, [task, editOverrides])
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -53,24 +61,35 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
 
   if (!isOpen || !task) return null
 
-  const colors = PRIORITY_COLORS[task.priority]
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Overlay */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 backdrop-blur-sm"
+        style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }}
         onClick={onClose}
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-lg rounded-2xl bg-white shadow-2xl">
+      <div className="glass-card relative w-full max-w-lg" style={{ boxShadow: 'var(--hover-glow)' }}>
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
-          <h2 className="text-lg font-semibold text-gray-900">Task Details</h2>
+        <div
+          className="flex items-center justify-between px-6 py-4"
+          style={{ borderBottom: '1px solid var(--color-border-soft)' }}
+        >
+          <h2
+            className="text-lg font-semibold"
+            style={{
+              fontFamily: 'var(--font-display)',
+              color: 'var(--color-text-main)',
+            }}
+          >
+            Task Details
+          </h2>
           <button
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors"
+            style={{ color: 'var(--color-text-muted)' }}
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -82,27 +101,47 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
         <div className="space-y-5 px-6 py-5">
           {/* Title */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Title</label>
+            <label className="mono-data mb-1.5 block font-medium" style={{ color: 'var(--color-text-muted)' }}>
+              Title
+            </label>
             {isEditing ? (
               <input
                 type="text"
                 value={editedTask.title || ''}
-                onChange={(e) => setEditedTask({ ...editedTask, title: e.target.value })}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-900 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                onChange={(e) => setEditOverrides({ ...editOverrides, title: e.target.value })}
+                className="glass-card w-full px-3 py-2 outline-none"
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  color: 'var(--color-text-main)',
+                }}
               />
             ) : (
-              <p className="text-base text-gray-900">{task.title}</p>
+              <p
+                className="text-base"
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  color: 'var(--color-text-main)',
+                }}
+              >
+                {task.title}
+              </p>
             )}
           </div>
 
           {/* Priority */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Priority</label>
+            <label className="mono-data mb-1.5 block font-medium" style={{ color: 'var(--color-text-muted)' }}>
+              Priority
+            </label>
             {isEditing ? (
               <select
                 value={editedTask.priority || task.priority}
-                onChange={(e) => setEditedTask({ ...editedTask, priority: e.target.value as Priority })}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-900 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                onChange={(e) => setEditOverrides({ ...editOverrides, priority: e.target.value as Priority })}
+                className="glass-card w-full px-3 py-2 outline-none"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  color: 'var(--color-text-main)',
+                }}
               >
                 <option value="critical">Critical</option>
                 <option value="high">High</option>
@@ -110,36 +149,39 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
                 <option value="low">Low</option>
               </select>
             ) : (
-              <span
-                className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
-                style={{ backgroundColor: colors.bg, color: colors.text }}
-              >
-                {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-              </span>
+              <StatusTag priority={task.priority} />
             )}
           </div>
 
           {/* Due Date */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Due Date</label>
+            <label className="mono-data mb-1.5 block font-medium" style={{ color: 'var(--color-text-muted)' }}>
+              Due Date
+            </label>
             {isEditing ? (
               <input
                 type="date"
                 value={editedTask.dueDate || task.dueDate}
-                onChange={(e) => setEditedTask({ ...editedTask, dueDate: e.target.value })}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-900 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                onChange={(e) => setEditOverrides({ ...editOverrides, dueDate: e.target.value })}
+                className="glass-card w-full px-3 py-2 outline-none"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  color: 'var(--color-text-main)',
+                }}
               />
             ) : (
-              <p className="text-gray-900">{new Date(task.dueDate).toLocaleDateString('en-US', { 
-                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-              })}</p>
+              <p className="mono-data" style={{ color: 'var(--color-text-main)' }}>
+                {new Date(task.dueDate).toLocaleDateString('en-US', {
+                  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+                })}
+              </p>
             )}
           </div>
 
           {/* Progress */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">
-              Progress: {editedTask.progress ?? task.progress}%
+            <label className="mono-data mb-1.5 block font-medium" style={{ color: 'var(--color-text-muted)' }}>
+              Progress: <span className="gradient-text">{editedTask.progress ?? task.progress}%</span>
             </label>
             {isEditing ? (
               <input
@@ -147,14 +189,21 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
                 min="0"
                 max="100"
                 value={editedTask.progress ?? task.progress}
-                onChange={(e) => setEditedTask({ ...editedTask, progress: parseInt(e.target.value) })}
-                className="w-full accent-violet-600"
+                onChange={(e) => setEditOverrides({ ...editOverrides, progress: parseInt(e.target.value) })}
+                className="w-full accent-[var(--color-neon-purple)]"
               />
             ) : (
-              <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+              <div
+                className="h-[2px] w-full overflow-hidden rounded-full"
+                style={{ backgroundColor: 'var(--color-border-soft)' }}
+              >
                 <div
-                  className="h-full rounded-full bg-violet-600 transition-all"
-                  style={{ width: `${task.progress}%` }}
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${task.progress}%`,
+                    background: 'linear-gradient(90deg, var(--color-neon-purple), var(--color-neon-blue))',
+                    transition: 'width 0.5s ease',
+                  }}
                 />
               </div>
             )}
@@ -162,27 +211,36 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
 
           {/* Column */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Status</label>
-            <p className="text-gray-900">
+            <label className="mono-data mb-1.5 block font-medium" style={{ color: 'var(--color-text-muted)' }}>
+              Status
+            </label>
+            <p className="mono-data" style={{ color: 'var(--color-text-main)' }}>
               {COLUMNS.find(c => c.id === task.columnId)?.title || task.columnId}
             </p>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between border-t border-gray-100 px-6 py-4">
+        <div
+          className="flex items-center justify-between px-6 py-4"
+          style={{ borderTop: '1px solid var(--color-border-soft)' }}
+        >
           {showDeleteConfirm ? (
             <div className="flex items-center gap-2">
-              <span className="text-sm text-red-600">Delete this task?</span>
+              <span className="mono-data" style={{ color: 'var(--color-status-crit)' }}>
+                Delete this task?
+              </span>
               <button
                 onClick={handleDelete}
-                className="rounded-lg bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-700"
+                className="rounded-lg px-3 py-1.5 text-sm font-medium text-white"
+                style={{ backgroundColor: 'var(--color-status-crit)' }}
               >
                 Yes, delete
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="rounded-lg bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200"
+                className="glass-card rounded-lg px-3 py-1.5 text-sm font-medium"
+                style={{ color: 'var(--color-text-main)' }}
               >
                 Cancel
               </button>
@@ -190,7 +248,8 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
           ) : (
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="text-sm text-red-600 hover:text-red-700"
+              className="mono-data transition-opacity hover:opacity-70"
+              style={{ color: 'var(--color-status-crit)' }}
             >
               Delete task
             </button>
@@ -201,13 +260,17 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
               <>
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
+                  className="glass-card rounded-lg px-4 py-2 text-sm font-medium"
+                  style={{ color: 'var(--color-text-main)' }}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSave}
-                  className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
+                  className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--color-neon-purple), var(--color-neon-blue))',
+                  }}
                 >
                   Save changes
                 </button>
@@ -215,7 +278,10 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
             ) : (
               <button
                 onClick={() => setIsEditing(true)}
-                className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
+                className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+                style={{
+                  background: 'linear-gradient(135deg, var(--color-neon-purple), var(--color-neon-blue))',
+                }}
               >
                 Edit task
               </button>

@@ -1,0 +1,42 @@
+/* === Lucid Grid Drift === */
+@keyframes lucid-drift {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(320px, 320px, 0); }
+}
+
+/* === Crosshair Pulse === */
+@keyframes pulse-opacity {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.8; }
+}
+
+/* === Glitch Animations === */
+@keyframes glitch-anim-1 {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(-2px, -1px); }
+  60% { transform: translate(2px, 1px); }
+  80% { transform: translate(2px, -1px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes glitch-anim-2 {
+  0% { transform: translate(0); }
+  20% { transform: translate(2px, -1px); }
+  40% { transform: translate(2px, 1px); }
+  60% { transform: translate(-2px, -1px); }
+  80% { transform: translate(-2px, 1px); }
+  100% { transform: translate(0); }
+}
+
+/* === Scanline Sweep === */
+@keyframes scan-move {
+  0% { transform: translateY(-100vh); }
+  100% { transform: translateY(100vh); }
+}
+
+/* === Breathing Glow (for crosshairs and accents) === */
+@keyframes breath-glow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}

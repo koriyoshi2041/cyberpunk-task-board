@@ -1,0 +1,29 @@
+:root {
+  /* === Color System === */
+  --color-bg-base: #FAFAFC;
+  --color-bg-card: rgba(255, 255, 255, 0.65);
+  --color-border-soft: rgba(0, 0, 0, 0.04);
+  --color-text-main: #111111;
+  --color-text-muted: #8A8A93;
+  --color-neon-purple: #8A2BE2;
+  --color-neon-blue: #4169E1;
+  --color-status-crit: #FF3366;
+  --color-status-done: #00E676;
+
+  /* === Typography === */
+  --font-display: 'Clash Display', 'Space Grotesk', sans-serif;
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-mono: 'Space Mono', 'JetBrains Mono', monospace;
+
+  /* === Effects === */
+  --glass-blur: blur(16px) saturate(180%);
+  --glass-bg: var(--color-bg-card);
+  --hover-glow: 0 8px 32px rgba(138, 43, 226, 0.08);
+  --border-radius-card: 12px;
+
+  /* === Grid === */
+  --grid-dot-size: 1.5px;
+  --grid-dot-color: rgba(138, 43, 226, 0.04);
+  --grid-spacing: 32px;
+  --grid-drift-duration: 60s;
+}

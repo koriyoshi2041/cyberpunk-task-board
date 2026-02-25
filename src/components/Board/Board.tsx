@@ -28,7 +28,7 @@ export function Board({ onTaskClick }: BoardProps) {
   )
 
   const handleComplete = useCallback(
-    (taskId: string, _rect: DOMRect) => {
+    (taskId: string) => {
       deleteTask(taskId)
     },
     [deleteTask]
@@ -42,7 +42,7 @@ export function Board({ onTaskClick }: BoardProps) {
   )
 
   return (
-    <div className="flex gap-6 overflow-x-auto px-6 pb-6">
+    <div className="flex gap-8 overflow-x-auto px-10 pb-6" style={{ position: 'relative', zIndex: 1 }}>
       {COLUMNS.map((column) => (
         <Column
           key={column.id}
