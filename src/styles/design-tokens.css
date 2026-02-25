@@ -1,14 +1,14 @@
 :root {
   /* === Color System === */
-  --color-bg-base: #FAFAFC;
-  --color-bg-card: rgba(255, 255, 255, 0.65);
-  --color-border-soft: rgba(0, 0, 0, 0.04);
-  --color-text-main: #111111;
-  --color-text-muted: #8A8A93;
-  --color-neon-purple: #8A2BE2;
-  --color-neon-blue: #4169E1;
-  --color-status-crit: #FF3366;
-  --color-status-done: #00E676;
+  --color-bg-base: #050510;
+  --color-bg-card: rgba(15, 15, 25, 0.65);
+  --color-border-soft: rgba(255, 255, 255, 0.08);
+  --color-text-main: #FFFFFF;
+  --color-text-muted: #8A8BA3;
+  --color-neon-purple: #B5179E;
+  --color-neon-blue: #4361EE;
+  --color-status-crit: #FF0054;
+  --color-status-done: #06D6A0;
 
   /* === Typography === */
   --font-display: 'Clash Display', 'Space Grotesk', sans-serif;

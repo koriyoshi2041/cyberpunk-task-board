@@ -13,13 +13,13 @@ export function LucidCanvas() {
                 dpr={[1, 2]} // Support high DPI screens
                 gl={{ alpha: true, antialias: true }}
             >
-                {/* Soft, light-mode friendly fog to fade grid into distance */}
-                <fog attach="fog" args={['#FAFAFC', 5, 25]} />
+                {/* Dark fog to match new background */}
+                <fog attach="fog" args={['#050510', 5, 25]} />
 
                 {/* Lighting setup for subtle premium look */}
-                <ambientLight intensity={1.2} />
-                <directionalLight position={[10, 10, 5]} intensity={0.5} color="#4169E1" />
-                <pointLight position={[-10, 5, -10]} intensity={1} color="#8A2BE2" />
+                <ambientLight intensity={1.5} />
+                <directionalLight position={[10, 10, 5]} intensity={1.0} color="#4361EE" />
+                <pointLight position={[-10, 5, -10]} intensity={2.0} color="#B5179E" />
 
                 <Suspense fallback={null}>
                     <HoloGrid />
@@ -38,14 +38,11 @@ export function LucidCanvas() {
                     dampingFactor={0.05}
                 />
             </Canvas>
-            {/* 
-        Optional CSS overlay to ensure the canvas blends perfectly with the very light background 
-        We use a radial gradient to keep the center bright and edge slightly darker
-      */}
+            {/* Dark vignette overlay to focus attention */}
             <div
-                className="absolute inset-0 pointer-events-none mix-blend-overlay"
+                className="absolute inset-0 pointer-events-none mix-blend-multiply"
                 style={{
-                    background: 'radial-gradient(circle at center, transparent 0%, rgba(250, 250, 252, 0.4) 100%)'
+                    background: 'radial-gradient(circle at center, transparent 0%, rgba(5, 5, 16, 0.8) 100%)'
                 }}
             />
         </div>

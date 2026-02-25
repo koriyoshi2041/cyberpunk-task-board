@@ -25,25 +25,25 @@ export function DataMonolith() {
     })
 
     return (
-        <group position={[5, 0, -10]}> {/* Position it off to the right and deep in background */}
+        <group position={[4, 0, -5]}> {/* Brought closer to camera so it's clearly visible */}
             {/* Outer Wireframe Torus Knot */}
             <mesh ref={outerRef}>
                 <torusKnotGeometry args={[4, 0.8, 128, 32]} />
                 <meshStandardMaterial
-                    color="#FAFAFC"
+                    color="#050510"
                     wireframe={true}
                     transparent={true}
-                    opacity={0.3}
-                    emissive="#8A2BE2"
-                    emissiveIntensity={0.5}
+                    opacity={0.4}
+                    emissive="#B5179E"
+                    emissiveIntensity={1.5}
                 />
             </mesh>
 
             {/* Inner Glass Icosahedron */}
             <mesh ref={innerRef}>
-                <icosahedronGeometry args={[3, 1]} />
+                <icosahedronGeometry args={[2.5, 1]} />
                 <meshPhysicalMaterial
-                    color="#4169E1"
+                    color="#4361EE"
                     metalness={0.9}
                     roughness={0.1}
                     envMapIntensity={1.0}

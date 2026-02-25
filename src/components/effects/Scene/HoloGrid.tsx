@@ -14,9 +14,9 @@ export function HoloGrid() {
     }
   })
 
-  // We create a very subtle, faded grid
-  const gridColor = new THREE.Color('#4169E1').multiplyScalar(0.7)
-  const centerColor = new THREE.Color('#8A2BE2').multiplyScalar(0.7)
+  // Bright neon grid for dark cyberpunk aesthetic
+  const gridColor = new THREE.Color('#4361EE').multiplyScalar(1.5)
+  const centerColor = new THREE.Color('#B5179E').multiplyScalar(2.0)
 
   return (
     <group ref={gridRef}>
@@ -28,14 +28,14 @@ export function HoloGrid() {
         args={[200, 200, centerColor, gridColor]}
         position={[0, -2.5, 0]}
         material-transparent={true}
-        material-opacity={0.08}
+        material-opacity={0.3}
       />
       {/* Optional: Add a second grid slightly offset to create a richer data look */}
       <gridHelper
         args={[200, 200, gridColor, centerColor]}
         position={[0, -2.55, 0]}
         material-transparent={true}
-        material-opacity={0.03}
+        material-opacity={0.15}
         rotation={[0, Math.PI / 4, 0]}
       />
     </group>
