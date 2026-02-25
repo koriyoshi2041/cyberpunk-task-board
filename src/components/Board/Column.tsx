@@ -14,6 +14,7 @@ interface ColumnProps {
   readonly onAddTask: (columnId: ColumnId, title: string, priority: Priority) => void
   readonly onMouseEnterCard: () => void
   readonly onMouseLeaveCard: () => void
+  readonly onTaskClick: (task: Task) => void
 }
 
 const COLUMN_COLORS: Record<ColumnId, string> = {
@@ -32,6 +33,7 @@ export function Column({
   onAddTask,
   onMouseEnterCard,
   onMouseLeaveCard,
+  onTaskClick,
 }: ColumnProps) {
   const columnRef = useRef<HTMLDivElement>(null)
   const [isOver, setIsOver] = useState(false)
@@ -203,6 +205,7 @@ export function Column({
             onComplete={onComplete}
             onMouseEnterCard={onMouseEnterCard}
             onMouseLeaveCard={onMouseLeaveCard}
+            onClick={() => onTaskClick(task)}
           />
         ))}
       </div>

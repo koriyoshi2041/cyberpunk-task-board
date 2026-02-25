@@ -6,6 +6,7 @@ interface TaskState {
   addTask: (title: string, columnId: ColumnId, priority: Priority) => void
   moveTask: (taskId: string, targetColumn: ColumnId) => void
   deleteTask: (taskId: string) => void
+  updateTask: (taskId: string, updates: Partial<Task>) => void
   updateProgress: (taskId: string, progress: number) => void
 }
 
@@ -124,6 +125,14 @@ export const useTaskStore = create<TaskState>((set) => ({
   deleteTask: (taskId) => {
     set((state) => ({
       tasks: state.tasks.filter((t) => t.id !== taskId),
+    }))
+  },
+
+  updateTask: (taskId, updates) => {
+    set((state) => ({
+      tasks: state.tasks.map((t) =>
+        t.id === taskId ? { ...t, ...updates } : t
+      ),
     }))
   },
 

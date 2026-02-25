@@ -9,6 +9,7 @@ interface TaskCardProps {
   readonly onComplete: (taskId: string, rect: DOMRect) => void
   readonly onMouseEnterCard: () => void
   readonly onMouseLeaveCard: () => void
+  readonly onClick: () => void
   readonly index: number
 }
 
@@ -30,6 +31,7 @@ export function TaskCard({
   onComplete,
   onMouseEnterCard,
   onMouseLeaveCard,
+  onClick,
   index,
 }: TaskCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
@@ -144,6 +146,7 @@ export function TaskCard({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onDoubleClick={handleDoubleClick}
+      onClick={onClick}
     >
       <div className="mb-2 flex items-start justify-between">
         <h3

@@ -1,13 +1,14 @@
 import { useRef, useState, useCallback } from 'react'
 import { useTaskStore } from '../../store/useTaskStore'
 import { COLUMNS } from '../../types/task'
-import type { ColumnId, Priority } from '../../types/task'
+import type { Task, ColumnId, Priority } from '../../types/task'
 import { Column } from './Column'
 import { ParticleExplosion } from '../Effects/ParticleExplosion'
 
 interface BoardProps {
   readonly onMouseEnterCard: () => void
   readonly onMouseLeaveCard: () => void
+  readonly onTaskClick: (task: Task) => void
 }
 
 interface Explosion {
@@ -17,7 +18,7 @@ interface Explosion {
   readonly color: string
 }
 
-export function Board({ onMouseEnterCard, onMouseLeaveCard }: BoardProps) {
+export function Board({ onMouseEnterCard, onMouseLeaveCard, onTaskClick }: BoardProps) {
   const { tasks, moveTask, deleteTask, addTask } = useTaskStore()
   const draggedTaskRef = useRef<string | null>(null)
   const [explosions, setExplosions] = useState<readonly Explosion[]>([])
@@ -76,6 +77,7 @@ export function Board({ onMouseEnterCard, onMouseLeaveCard }: BoardProps) {
             onAddTask={handleAddTask}
             onMouseEnterCard={onMouseEnterCard}
             onMouseLeaveCard={onMouseLeaveCard}
+            onTaskClick={onTaskClick}
           />
         ))}
       </div>

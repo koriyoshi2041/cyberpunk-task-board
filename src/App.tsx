@@ -9,13 +9,19 @@ import { SystemStats } from './components/UI/SystemStats'
 import { ScanLines } from './components/Effects/ScanLines'
 import { GridBackground } from './components/Effects/GridBackground'
 import { GlitchText } from './components/UI/GlitchText'
+import { TaskModal } from './components/UI/TaskModal'
 import { useTaskStore } from './store/useTaskStore'
+import type { Task } from './types/task'
 
 export default function App() {
   const { cursorRef, cursorOuterRef, setCursorState, resetCursor } = useMouse()
   const [showAddModal, setShowAddModal] = useState(false)
   const [modalTitle, setModalTitle] = useState('')
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false)
   const addTask = useTaskStore((s) => s.addTask)
+  const updateTask = useTaskStore((s) => s.updateTask)
+  const deleteTask = useTaskStore((s) => s.deleteTask)
 
   useLenis()
 
@@ -38,6 +44,24 @@ export default function App() {
   const handleAddTask = useCallback(() => {
     setShowAddModal(true)
   }, [])
+
+  const handleTaskClick = useCallback((task: Task) => {
+    setSelectedTask(task)
+    setIsTaskModalOpen(true)
+  }, [])
+
+  const handleTaskModalClose = useCallback(() => {
+    setIsTaskModalOpen(false)
+    setSelectedTask(null)
+  }, [])
+
+  const handleTaskUpdate = useCallback((taskId: string, updates: Partial<Task>) => {
+    updateTask(taskId, updates)
+  }, [updateTask])
+
+  const handleTaskDelete = useCallback((taskId: string) => {
+    deleteTask(taskId)
+  }, [deleteTask])
 
   const handleModalSubmit = useCallback(() => {
     const trimmed = modalTitle.trim()
@@ -74,6 +98,15 @@ export default function App() {
       <Board
         onMouseEnterCard={handleMouseEnterCard}
         onMouseLeaveCard={handleMouseLeaveCard}
+        onTaskClick={handleTaskClick}
+      />
+
+      <TaskModal
+        task={selectedTask}
+        isOpen={isTaskModalOpen}
+        onClose={handleTaskModalClose}
+        onUpdate={handleTaskUpdate}
+        onDelete={handleTaskDelete}
       />
 
       <div className="fixed bottom-4 left-4 z-50">
