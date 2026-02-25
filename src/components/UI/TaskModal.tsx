@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import gsap from 'gsap'
-import type { Task, Priority, ColumnId } from '../../types/task'
+import type { Task, Priority } from '../../types/task'
 import { PRIORITY_COLORS, COLUMNS } from '../../types/task'
 import { GlitchText } from './GlitchText'
 
@@ -99,9 +99,9 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
       >
         {/* Header */}
         <div className="mb-4 flex items-center justify-between border-b pb-3" style={{ borderColor: `${glowColor}33` }}>
-          <GlitchText className="font-mono text-xs font-bold uppercase tracking-widest" style={{ color: '#111827' }}>
-            TASK_DETAILS
-          </GlitchText>
+          <span className="font-mono text-xs font-bold uppercase tracking-widest" style={{ color: '#111827' }}>
+            <GlitchText>TASK_DETAILS</GlitchText>
+          </span>
           <button
             onClick={handleClose}
             className="font-mono text-lg transition-colors hover:text-[#ff2d95]"
