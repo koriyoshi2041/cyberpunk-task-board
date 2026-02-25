@@ -41,13 +41,13 @@ export function SystemStats() {
   }, [])
 
   return (
-    <div className="font-mono text-[10px] leading-relaxed tracking-wider opacity-60" style={{ color: '#4a4a6a' }}>
+    <div className="font-mono text-[10px] leading-relaxed tracking-wider opacity-60" style={{ color: '#374151' }}>
       {STATS.map((stat, i) => (
         <div key={stat.label} className="flex justify-between gap-3">
-          <span style={{ color: '#9d4edd' }}>{stat.label}:</span>
+          <span style={{ color: '#7c3aed' }}>{stat.label}:</span>
           <span
             className="tabular-nums transition-all duration-150"
-            style={{ color: i === 0 && parseFloat(values[i]) > 70 ? '#ff2d95' : '#4a4a6a' }}
+            style={{ color: i === 0 && parseFloat(values[i]) > 70 ? '#ff2d95' : '#374151' }}
           >
             {values[i]}{stat.unit}
           </span>

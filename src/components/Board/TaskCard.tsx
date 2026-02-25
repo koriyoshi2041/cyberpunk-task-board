@@ -151,7 +151,7 @@ export function TaskCard({
       <div className="mb-2 flex items-start justify-between">
         <h3
           className="font-mono text-xs font-medium leading-tight tracking-wide"
-          style={{ color: '#1a1a2e' }}
+          style={{ color: '#111827' }}
         >
           {task.title}
         </h3>
@@ -198,7 +198,7 @@ export function TaskCard({
         >
           {task.assignee}
         </div>
-        <span className="font-mono text-[8px] tracking-wider" style={{ color: '#9d4edd' }}>
+        <span className="font-mono text-[8px] tracking-wider" style={{ color: '#7c3aed' }}>
           {task.progress}%
         </span>
       </div>

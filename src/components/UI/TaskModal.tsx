@@ -99,13 +99,13 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
       >
         {/* Header */}
         <div className="mb-4 flex items-center justify-between border-b pb-3" style={{ borderColor: `${glowColor}33` }}>
-          <GlitchText className="font-mono text-xs font-bold uppercase tracking-widest" style={{ color: '#1a1a2e' }}>
+          <GlitchText className="font-mono text-xs font-bold uppercase tracking-widest" style={{ color: '#111827' }}>
             TASK_DETAILS
           </GlitchText>
           <button
             onClick={handleClose}
             className="font-mono text-lg transition-colors hover:text-[#ff2d95]"
-            style={{ color: '#4a4a6a' }}
+            style={{ color: '#374151' }}
           >
             ×
           </button>
@@ -115,7 +115,7 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
         <div className="space-y-4">
           {/* Title */}
           <div>
-            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest" style={{ color: '#4a4a6a' }}>
+            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest" style={{ color: '#374151' }}>
               Title
             </label>
             {isEditing ? (
@@ -126,17 +126,17 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
                 className="w-full border bg-white px-3 py-2 font-mono text-sm focus:outline-none"
                 style={{ 
                   borderColor: `${glowColor}44`,
-                  color: '#1a1a2e',
+                  color: '#111827',
                 }}
               />
             ) : (
-              <p className="font-mono text-sm font-medium" style={{ color: '#1a1a2e' }}>{task.title}</p>
+              <p className="font-mono text-sm font-medium" style={{ color: '#111827' }}>{task.title}</p>
             )}
           </div>
 
           {/* Priority */}
           <div>
-            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest" style={{ color: '#4a4a6a' }}>
+            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest" style={{ color: '#374151' }}>
               Priority
             </label>
             {isEditing ? (
@@ -144,7 +144,7 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
                 value={editedTask.priority || task.priority}
                 onChange={(e) => setEditedTask({ ...editedTask, priority: e.target.value as Priority })}
                 className="w-full border bg-white px-3 py-2 font-mono text-xs uppercase focus:outline-none"
-                style={{ borderColor: `${glowColor}44`, color: '#1a1a2e' }}
+                style={{ borderColor: `${glowColor}44`, color: '#111827' }}
               >
                 <option value="critical">Critical</option>
                 <option value="high">High</option>
@@ -167,7 +167,7 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
 
           {/* Due Date */}
           <div>
-            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest" style={{ color: '#4a4a6a' }}>
+            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest" style={{ color: '#374151' }}>
               Due Date
             </label>
             {isEditing ? (
@@ -176,16 +176,16 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
                 value={editedTask.dueDate || task.dueDate}
                 onChange={(e) => setEditedTask({ ...editedTask, dueDate: e.target.value })}
                 className="w-full border bg-white px-3 py-2 font-mono text-sm focus:outline-none"
-                style={{ borderColor: `${glowColor}44`, color: '#1a1a2e' }}
+                style={{ borderColor: `${glowColor}44`, color: '#111827' }}
               />
             ) : (
-              <p className="font-mono text-sm" style={{ color: '#1a1a2e' }}>{task.dueDate}</p>
+              <p className="font-mono text-sm" style={{ color: '#111827' }}>{task.dueDate}</p>
             )}
           </div>
 
           {/* Progress */}
           <div>
-            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest" style={{ color: '#4a4a6a' }}>
+            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest" style={{ color: '#374151' }}>
               Progress: {editedTask.progress ?? task.progress}%
             </label>
             {isEditing ? (
@@ -214,10 +214,10 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
 
           {/* Column */}
           <div>
-            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest" style={{ color: '#4a4a6a' }}>
+            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest" style={{ color: '#374151' }}>
               Column
             </label>
-            <p className="font-mono text-sm uppercase" style={{ color: '#1a1a2e' }}>
+            <p className="font-mono text-sm uppercase" style={{ color: '#111827' }}>
               {COLUMNS.find(c => c.id === task.columnId)?.title || task.columnId}
             </p>
           </div>
@@ -238,7 +238,7 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
               <button
                 onClick={() => setShowDeleteConfirm(false)}
                 className="px-3 py-1 font-mono text-[10px] uppercase tracking-wider transition-all hover:scale-105"
-                style={{ backgroundColor: '#4a4a6a', color: 'white' }}
+                style={{ backgroundColor: '#374151', color: 'white' }}
               >
                 No
               </button>
@@ -247,7 +247,7 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
             <button
               onClick={() => setShowDeleteConfirm(true)}
               className="font-mono text-[10px] uppercase tracking-wider transition-colors hover:text-[#ff2d95]"
-              style={{ color: '#4a4a6a' }}
+              style={{ color: '#374151' }}
             >
               [DELETE]
             </button>
@@ -259,7 +259,7 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
                 <button
                   onClick={() => setIsEditing(false)}
                   className="px-4 py-2 font-mono text-[10px] uppercase tracking-wider transition-all hover:scale-105"
-                  style={{ backgroundColor: '#4a4a6a', color: 'white' }}
+                  style={{ backgroundColor: '#374151', color: 'white' }}
                 >
                   Cancel
                 </button>

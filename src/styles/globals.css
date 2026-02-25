@@ -4,13 +4,13 @@
   --bg-primary: #f8f9fa;
   --bg-secondary: #eef1f5;
   --cyber-pink: #ff2d95;
-  --cyber-cyan: #00fff0;
-  --cyber-purple: #9d4edd;
-  --cyber-yellow: #ffe66d;
+  --cyber-cyan: #00d4d4;
+  --cyber-purple: #7c3aed;
+  --cyber-yellow: #f59e0b;
   --glow-pink: 0 0 20px rgba(255, 45, 149, 0.4);
-  --glow-cyan: 0 0 20px rgba(0, 255, 240, 0.4);
-  --text-primary: #1a1a2e;
-  --text-secondary: #4a4a6a;
+  --glow-cyan: 0 0 20px rgba(0, 212, 212, 0.4);
+  --text-primary: #111827;
+  --text-secondary: #374151;
 }
 
 * {

@@ -26,10 +26,10 @@ export const COLUMNS: readonly Column[] = [
 ] as const
 
 export const PRIORITY_COLORS: Record<Priority, string> = {
-  critical: '#ff2d95',
-  high: '#9d4edd',
-  medium: '#00fff0',
-  low: '#ffe66d',
+  critical: '#dc2626',
+  high: '#7c3aed',
+  medium: '#0891b2',
+  low: '#ca8a04',
 }
 
 export const ASSIGNEES = ['AX', 'KZ', 'NV', 'RY', 'QT'] as const

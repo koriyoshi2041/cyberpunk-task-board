@@ -18,7 +18,7 @@ interface ColumnProps {
 }
 
 const COLUMN_COLORS: Record<ColumnId, string> = {
-  backlog: '#9d4edd',
+  backlog: '#7c3aed',
   in_progress: '#00fff0',
   review: '#ffe66d',
   done: '#ff2d95',
@@ -170,7 +170,7 @@ export function Column({
               className="font-mono text-[11px] font-bold tracking-[0.2em]"
               autoPlay={false}
             >
-              <span style={{ color: '#1a1a2e' }}>{column.title}</span>
+              <span style={{ color: '#111827' }}>{column.title}</span>
             </GlitchText>
           </div>
           <span
@@ -183,7 +183,7 @@ export function Column({
         </div>
         <div
           className="mt-1 font-mono text-[8px] tracking-widest"
-          style={{ color: '#9d4edd', opacity: 0.5 }}
+          style={{ color: '#7c3aed', opacity: 0.5 }}
         >
           {'///'} {column.label} {'///'}
         </div>
@@ -218,7 +218,7 @@ export function Column({
               className="flex-1 border bg-transparent px-2 py-1 font-mono text-[10px] tracking-wider outline-none"
               style={{
                 borderColor: accentColor,
-                color: '#1a1a2e',
+                color: '#111827',
                 boxShadow: `0 0 8px ${accentColor}33`,
               }}
               placeholder="ENTER_TASK_NAME..."

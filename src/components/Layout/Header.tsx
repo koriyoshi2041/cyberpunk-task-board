@@ -39,16 +39,16 @@ export function Header({ onAddTask, onMouseEnterButton, onMouseLeaveButton }: He
       <div className="flex items-center gap-4">
         <div
           className="flex items-center gap-2 font-mono text-xs tracking-wider"
-          style={{ color: '#9d4edd' }}
+          style={{ color: '#7c3aed' }}
         >
           <span className="inline-block h-2 w-2 animate-pulse rounded-full" style={{ backgroundColor: '#00fff0', boxShadow: '0 0 8px rgba(0,255,240,0.6)' }} />
           <span>SYS</span>
         </div>
         <GlitchText as="h1" className="font-mono text-lg font-bold tracking-widest" autoPlay>
-          <span style={{ color: '#1a1a2e' }}>{'[ '}</span>
+          <span style={{ color: '#111827' }}>{'[ '}</span>
           <span style={{ color: '#ff2d95' }}>TASK_BOARD</span>
           <span style={{ color: '#4a4a6a' }}> v2.077</span>
-          <span style={{ color: '#1a1a2e' }}>{' ]'}</span>
+          <span style={{ color: '#111827' }}>{' ]'}</span>
         </GlitchText>
         {titleRevealed && (
           <span
@@ -78,10 +78,10 @@ export function Header({ onAddTask, onMouseEnterButton, onMouseLeaveButton }: He
           className="flex items-center gap-1 font-mono text-xs"
           style={{ color: '#4a4a6a' }}
         >
-          <span className="cursor-none border px-2 py-1 transition-colors hover:border-[#9d4edd]" style={{ borderColor: 'rgba(157,78,221,0.3)' }}>
+          <span className="cursor-none border px-2 py-1 transition-colors hover:border-[#7c3aed]" style={{ borderColor: 'rgba(157,78,221,0.3)' }}>
             ⚙
           </span>
-          <span className="cursor-none border px-2 py-1 transition-colors hover:border-[#9d4edd]" style={{ borderColor: 'rgba(157,78,221,0.3)' }}>
+          <span className="cursor-none border px-2 py-1 transition-colors hover:border-[#7c3aed]" style={{ borderColor: 'rgba(157,78,221,0.3)' }}>
             ◉
           </span>
         </div>
@@ -90,7 +90,7 @@ export function Header({ onAddTask, onMouseEnterButton, onMouseLeaveButton }: He
       <div
         className="absolute bottom-0 left-0 h-[1px]"
         style={{
-          background: 'linear-gradient(90deg, transparent, #ff2d95, #00fff0, #9d4edd, transparent)',
+          background: 'linear-gradient(90deg, transparent, #ff2d95, #00fff0, #7c3aed, transparent)',
           width: '100%',
         }}
       />

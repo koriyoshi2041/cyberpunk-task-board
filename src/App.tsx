@@ -118,11 +118,11 @@ export default function App() {
             backdropFilter: 'blur(8px)',
           }}
         >
-          <div className="mb-1.5 font-mono text-[8px] tracking-widest" style={{ color: '#9d4edd' }}>
+          <div className="mb-1.5 font-mono text-[8px] tracking-widest" style={{ color: '#7c3aed' }}>
             ╔══ SYS_MONITOR ══╗
           </div>
           <SystemStats />
-          <div className="mt-1.5 font-mono text-[8px] tracking-widest" style={{ color: '#9d4edd' }}>
+          <div className="mt-1.5 font-mono text-[8px] tracking-widest" style={{ color: '#7c3aed' }}>
             ╚═════════════════╝
           </div>
         </div>
@@ -134,7 +134,7 @@ export default function App() {
           style={{
             borderColor: 'rgba(0,255,240,0.2)',
             backgroundColor: 'rgba(248,249,250,0.9)',
-            color: '#4a4a6a',
+            color: '#374151',
             backdropFilter: 'blur(8px)',
           }}
         >
@@ -169,7 +169,7 @@ export default function App() {
               className="w-full border bg-transparent px-3 py-2 font-mono text-sm tracking-wider outline-none"
               style={{
                 borderColor: 'rgba(157,78,221,0.3)',
-                color: '#1a1a2e',
+                color: '#111827',
               }}
               placeholder="ENTER_TASK_DESCRIPTION..."
               value={modalTitle}
@@ -180,7 +180,7 @@ export default function App() {
             <div className="mt-4 flex justify-end gap-2">
               <button
                 className="border px-3 py-1 font-mono text-[10px] tracking-wider"
-                style={{ borderColor: 'rgba(157,78,221,0.3)', color: '#4a4a6a' }}
+                style={{ borderColor: 'rgba(157,78,221,0.3)', color: '#374151' }}
                 onClick={() => setShowAddModal(false)}
               >
                 [ESC] CANCEL
