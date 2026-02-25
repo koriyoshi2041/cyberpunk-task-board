@@ -1,20 +1,51 @@
 import { Canvas } from '@react-three/fiber'
 import { CameraControls } from '@react-three/drei'
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { HoloGrid } from './HoloGrid'
 import { FloatingDust } from './FloatingDust'
 import { DataMonolith } from './DataMonolith'
 
 import { WebGLFallback } from './WebGLFallback'
 
+function isWebGLAvailable() {
+    try {
+        const canvas = document.createElement('canvas');
+        return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+    } catch (e) {
+        return false;
+    }
+}
+
 export function LucidCanvas() {
+    const [hasWebGL, setHasWebGL] = useState(true);
+
+    useEffect(() => {
+        setHasWebGL(isWebGLAvailable());
+    }, []);
+
+    if (!hasWebGL) {
+        return (
+            <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center p-8 pointer-events-none opacity-50 z-0">
+                    <div className="text-center p-6 border rounded-xl glass-card text-gray-400">
+                        <h3 className="text-lg font-bold mb-2">3D Background Disabled</h3>
+                        <p className="text-sm">
+                            Your browser environment does not support WebGL or hardware acceleration is restricted (Sandboxing).<br />
+                            The 3D Cyberpunk models cannot be rendered here. Please enable Hardware Acceleration in Chrome settings.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
             <WebGLFallback>
                 <Canvas
                     camera={{ position: [0, 0, 8], fov: 50 }}
                     dpr={[1, 2]} // Support high DPI screens
-                    gl={{ alpha: true, antialias: true }}
+                    gl={{ alpha: true, antialias: true, failIfMajorPerformanceCaveat: true }}
                 >
                     {/* Fog to match light background */}
                     <fog attach="fog" args={['#f5f6fa', 5, 25]} />
@@ -29,7 +60,6 @@ export function LucidCanvas() {
                         <HoloGrid />
                         <DataMonolith />
                         <FloatingDust count={300} />
-                        {/* Environment is INTENTIONALLY REMOVED. It caused suspense to hang due to network fetching HDRI */}
                     </Suspense>
 
                     {/* Minimal interactive tilt */}
