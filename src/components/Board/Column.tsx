@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import type { Task, ColumnId, Priority } from '../../types/task'
 import type { Column as ColumnType } from '../../types/task'
 import { TaskCard } from './TaskCard'
@@ -77,16 +78,26 @@ export function Column({
       {/* Header with large display number */}
       <div className="relative px-4 py-3">
         {/* Large stroke number behind */}
-        <span
-          className="text-stroke pointer-events-none absolute right-4 -top-1 select-none"
-          style={{ fontSize: '48px', fontWeight: 600, lineHeight: 1 }}
-        >
-          {String(tasks.length).padStart(2, '0')}
-        </span>
+        <div className="pointer-events-none absolute right-4 -top-1 w-16 h-12 overflow-hidden">
+          <AnimatePresence mode="popLayout">
+            <motion.span
+              key={tasks.length}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -20, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              className="text-stroke block text-right w-full select-none"
+              style={{ fontSize: '48px', fontWeight: 600, lineHeight: 1 }}
+            >
+              {String(tasks.length).padStart(2, '0')}
+            </motion.span>
+          </AnimatePresence>
+        </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between relative z-10">
           <h2
-            className="text-lg font-medium"
+            className="text-lg font-medium glitch-text cursor-default"
+            data-text={column.title}
             style={{
               fontFamily: 'var(--font-display)',
               color: 'var(--color-text-main)',
@@ -95,7 +106,9 @@ export function Column({
             {column.title}
           </h2>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.1, color: 'var(--color-neon-purple)' }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => setIsAdding(true)}
             className="flex h-7 w-7 items-center justify-center rounded-md transition-colors"
             style={{ color: 'var(--color-text-muted)' }}
@@ -103,7 +116,7 @@ export function Column({
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-          </button>
+          </motion.button>
         </div>
       </div>
 

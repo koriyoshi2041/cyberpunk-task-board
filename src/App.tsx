@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import { Header } from './components/Layout/Header'
 import { Board } from './components/Board/Board'
 import { TaskModal } from './components/UI/TaskModal'
-import { LucidGrid } from './components/effects/LucidGrid'
+import { LucidCanvas } from './components/effects/Scene/LucidCanvas'
 import { ScanlineOverlay } from './components/effects/ScanlineOverlay'
 import { Crosshair } from './components/effects/Crosshair'
 import { useTaskStore } from './store/useTaskStore'
@@ -66,7 +66,7 @@ export default function App() {
       style={{ backgroundColor: 'var(--color-bg-base)' }}
     >
       {/* Background effects */}
-      <LucidGrid />
+      <LucidCanvas />
       <ScanlineOverlay />
 
       {/* Decorative crosshairs */}

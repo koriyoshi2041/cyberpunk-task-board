@@ -35,15 +35,21 @@ body {
 }
 
 /* === Status Tag Glitch Effect === */
-.status-tag {
+.status-tag,
+.glitch-text {
   position: relative;
   display: inline-block;
+}
+
+.status-tag {
   font-family: var(--font-mono);
   overflow: hidden;
 }
 
 .status-tag:hover::before,
-.status-tag:hover::after {
+.status-tag:hover::after,
+.glitch-text:hover::before,
+.glitch-text:hover::after {
   content: attr(data-text);
   position: absolute;
   top: 0;
@@ -53,27 +59,29 @@ body {
   background: var(--color-bg-base);
 }
 
-.status-tag:hover::before {
+.status-tag:hover::before,
+.glitch-text:hover::before {
   left: 2px;
   text-shadow: -1px 0 var(--color-neon-blue);
   clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
   animation: glitch-anim-1 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
 }
 
-.status-tag:hover::after {
+.status-tag:hover::after,
+.glitch-text:hover::after {
   left: -2px;
   text-shadow: -1px 0 var(--color-status-crit);
   clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
   animation: glitch-anim-2 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite reverse;
 }
 
-/* === Glassmorphism Card === */
 .glass-card {
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--color-border-soft);
   border-radius: var(--border-radius-card);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), 0 4px 24px rgba(0, 0, 0, 0.02);
 }
 
 /* === Text Stroke (Display Numbers) === */

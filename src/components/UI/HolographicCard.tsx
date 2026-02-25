@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, type MouseEvent, type ReactNode } from 'react'
+import { motion } from 'framer-motion'
 
 interface HolographicCardProps {
   readonly children: ReactNode
@@ -29,15 +30,18 @@ export function HolographicCard({
   }, [])
 
   return (
-    <div
+    <motion.div
       ref={cardRef}
-      className={`relative ${className}`}
+      className={`relative ${className} cursor-grab active:cursor-grabbing`}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       onClick={onClick}
       draggable={draggable}
-      onDragStart={onDragStart}
+      onDragStart={onDragStart as any}
+      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.98, rotateZ: draggable ? Math.random() * 2 - 1 : 0 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
     >
       {/* Holographic glow layer */}
       <div
@@ -59,6 +63,6 @@ export function HolographicCard({
       <div className="glass-card relative p-6">
         {children}
       </div>
-    </div>
+    </motion.div>
   )
 }
