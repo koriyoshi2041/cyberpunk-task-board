@@ -23,7 +23,7 @@ export function FloatingDust({ count = 800 }) {
                     Math.random() * Math.PI
                 ),
                 // Random scale (tiny dust)
-                scale: new THREE.Vector3().setScalar(0.01 + Math.random() * 0.03),
+                scale: new THREE.Vector3().setScalar(0.1 + Math.random() * 0.3),
                 // Individual speed multiplier
                 speed: 0.2 + Math.random(),
                 // Offset for sine wave movements

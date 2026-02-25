@@ -3,7 +3,7 @@ import { Environment, CameraControls } from '@react-three/drei'
 import { Suspense } from 'react'
 import { HoloGrid } from './HoloGrid'
 import { FloatingDust } from './FloatingDust'
-
+import { DataMonolith } from './DataMonolith'
 
 export function LucidCanvas() {
     return (
@@ -23,7 +23,8 @@ export function LucidCanvas() {
 
                 <Suspense fallback={null}>
                     <HoloGrid />
-                    <FloatingDust count={600} />
+                    <DataMonolith />
+                    <FloatingDust count={300} />
                     {/* Subtle environment map for reflections on materials */}
                     <Environment preset="city" />
                 </Suspense>

@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import type { Task, ColumnId, Priority } from '../types/task'
 
 interface TaskState {
@@ -93,54 +94,59 @@ const INITIAL_TASKS: readonly Task[] = [
   },
 ]
 
-let nextId = 9
+export const useTaskStore = create<TaskState>()(
+  persist(
+    (set) => ({
+      tasks: INITIAL_TASKS,
 
-export const useTaskStore = create<TaskState>((set) => ({
-  tasks: INITIAL_TASKS,
+      addTask: (title, columnId, priority) => {
+        const newTask: Task = {
+          id: `task-${Date.now()}`,
+          title,
+          priority,
+          dueDate: new Date(Date.now() + 86400000 * 7).toISOString().split('T')[0],
+          assignee: ['AX', 'KZ', 'NV', 'RY', 'QT'][Math.floor(Math.random() * 5)],
+          progress: 0,
+          columnId,
+          createdAt: Date.now(),
+        }
+        set((state) => ({ tasks: [...state.tasks, newTask] }))
+      },
 
-  addTask: (title, columnId, priority) => {
-    const newTask: Task = {
-      id: `task-${nextId++}`,
-      title,
-      priority,
-      dueDate: new Date(Date.now() + 86400000 * 7).toISOString().split('T')[0],
-      assignee: ['AX', 'KZ', 'NV', 'RY', 'QT'][Math.floor(Math.random() * 5)],
-      progress: 0,
-      columnId,
-      createdAt: Date.now(),
+      moveTask: (taskId, targetColumn) => {
+        set((state) => ({
+          tasks: state.tasks.map((t) =>
+            t.id === taskId
+              ? { ...t, columnId: targetColumn, progress: targetColumn === 'done' ? 100 : t.progress }
+              : t
+          ),
+        }))
+      },
+
+      deleteTask: (taskId) => {
+        set((state) => ({
+          tasks: state.tasks.filter((t) => t.id !== taskId),
+        }))
+      },
+
+      updateTask: (taskId, updates) => {
+        set((state) => ({
+          tasks: state.tasks.map((t) =>
+            t.id === taskId ? { ...t, ...updates } : t
+          ),
+        }))
+      },
+
+      updateProgress: (taskId, progress) => {
+        set((state) => ({
+          tasks: state.tasks.map((t) =>
+            t.id === taskId ? { ...t, progress: Math.min(100, Math.max(0, progress)) } : t
+          ),
+        }))
+      },
+    }),
+    {
+      name: 'cyber-task-storage', // unique name for localStorage
     }
-    set((state) => ({ tasks: [...state.tasks, newTask] }))
-  },
-
-  moveTask: (taskId, targetColumn) => {
-    set((state) => ({
-      tasks: state.tasks.map((t) =>
-        t.id === taskId
-          ? { ...t, columnId: targetColumn, progress: targetColumn === 'done' ? 100 : t.progress }
-          : t
-      ),
-    }))
-  },
-
-  deleteTask: (taskId) => {
-    set((state) => ({
-      tasks: state.tasks.filter((t) => t.id !== taskId),
-    }))
-  },
-
-  updateTask: (taskId, updates) => {
-    set((state) => ({
-      tasks: state.tasks.map((t) =>
-        t.id === taskId ? { ...t, ...updates } : t
-      ),
-    }))
-  },
-
-  updateProgress: (taskId, progress) => {
-    set((state) => ({
-      tasks: state.tasks.map((t) =>
-        t.id === taskId ? { ...t, progress: Math.min(100, Math.max(0, progress)) } : t
-      ),
-    }))
-  },
-}))
+  )
+)
