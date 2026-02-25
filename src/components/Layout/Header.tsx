@@ -1,99 +1,55 @@
-import { useEffect, useRef, useState } from 'react'
-import gsap from 'gsap'
-import { GlitchText } from '../UI/GlitchText'
-
 interface HeaderProps {
   readonly onAddTask: () => void
-  readonly onMouseEnterButton: () => void
-  readonly onMouseLeaveButton: () => void
 }
 
-export function Header({ onAddTask, onMouseEnterButton, onMouseLeaveButton }: HeaderProps) {
-  const headerRef = useRef<HTMLElement>(null)
-  const [titleRevealed, setTitleRevealed] = useState(false)
-
-  useEffect(() => {
-    const el = headerRef.current
-    if (!el) return
-
-    gsap.fromTo(
-      el,
-      { y: -60, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.3 }
-    )
-
-    const timer = setTimeout(() => setTitleRevealed(true), 800)
-    return () => clearTimeout(timer)
-  }, [])
-
+export function Header({ onAddTask }: HeaderProps) {
   return (
-    <header
-      ref={headerRef}
-      className="relative flex items-center justify-between border-b px-6 py-4"
-      style={{
-        borderColor: 'rgba(157, 78, 221, 0.2)',
-        backgroundColor: 'rgba(248, 249, 250, 0.8)',
-        backdropFilter: 'blur(10px)',
-      }}
-    >
-      <div className="flex items-center gap-4">
-        <div
-          className="flex items-center gap-2 font-mono text-xs tracking-wider"
-          style={{ color: '#7c3aed' }}
-        >
-          <span className="inline-block h-2 w-2 animate-pulse rounded-full" style={{ backgroundColor: '#00fff0', boxShadow: '0 0 8px rgba(0,255,240,0.6)' }} />
-          <span>SYS</span>
+    <header className="sticky top-0 z-40 bg-white border-b border-gray-200">
+      <div className="flex items-center justify-between px-6 py-4">
+        {/* Logo & Title */}
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-purple-600">
+            <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-lg font-semibold text-gray-900">Task Board</h1>
+            <p className="text-sm text-gray-500">Manage your projects</p>
+          </div>
         </div>
-        <GlitchText as="h1" className="font-mono text-lg font-bold tracking-widest" autoPlay>
-          <span style={{ color: '#111827' }}>{'[ '}</span>
-          <span style={{ color: '#ff2d95' }}>TASK_BOARD</span>
-          <span style={{ color: '#4a4a6a' }}> v2.077</span>
-          <span style={{ color: '#111827' }}>{' ]'}</span>
-        </GlitchText>
-        {titleRevealed && (
-          <span
-            className="animate-pulse font-mono text-[10px] tracking-wider"
-            style={{ color: '#00fff0' }}
+
+        {/* Actions */}
+        <div className="flex items-center gap-3">
+          {/* Search */}
+          <div className="relative hidden sm:block">
+            <svg className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search tasks..."
+              className="w-64 rounded-lg border border-gray-200 bg-gray-50 py-2 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 focus:border-violet-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-violet-500"
+            />
+          </div>
+
+          {/* Add button */}
+          <button
+            onClick={onAddTask}
+            className="flex items-center gap-2 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-violet-700 transition-colors"
           >
-            CONNECTED
-          </span>
-        )}
-      </div>
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            New Task
+          </button>
 
-      <div className="flex items-center gap-3">
-        <button
-          className="cursor-none border px-3 py-1.5 font-mono text-xs tracking-wider transition-all hover:scale-105"
-          style={{
-            borderColor: '#ff2d95',
-            color: '#ff2d95',
-            boxShadow: '0 0 8px rgba(255,45,149,0.3)',
-          }}
-          onClick={onAddTask}
-          onMouseEnter={onMouseEnterButton}
-          onMouseLeave={onMouseLeaveButton}
-        >
-          [+] NEW_TASK
-        </button>
-        <div
-          className="flex items-center gap-1 font-mono text-xs"
-          style={{ color: '#4a4a6a' }}
-        >
-          <span className="cursor-none border px-2 py-1 transition-colors hover:border-[#7c3aed]" style={{ borderColor: 'rgba(157,78,221,0.3)' }}>
-            ⚙
-          </span>
-          <span className="cursor-none border px-2 py-1 transition-colors hover:border-[#7c3aed]" style={{ borderColor: 'rgba(157,78,221,0.3)' }}>
-            ◉
-          </span>
+          {/* User avatar */}
+          <button className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-pink-500 text-sm font-medium text-white">
+            P
+          </button>
         </div>
       </div>
-
-      <div
-        className="absolute bottom-0 left-0 h-[1px]"
-        style={{
-          background: 'linear-gradient(90deg, transparent, #ff2d95, #00fff0, #7c3aed, transparent)',
-          width: '100%',
-        }}
-      />
     </header>
   )
 }

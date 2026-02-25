@@ -1,5 +1,4 @@
-import { useRef, useEffect } from 'react'
-import gsap from 'gsap'
+import { useRef } from 'react'
 import type { Task } from '../../types/task'
 import { PRIORITY_COLORS } from '../../types/task'
 
@@ -7,209 +6,100 @@ interface TaskCardProps {
   readonly task: Task
   readonly onDragStart: (e: React.DragEvent, taskId: string) => void
   readonly onComplete: (taskId: string, rect: DOMRect) => void
-  readonly onMouseEnterCard: () => void
-  readonly onMouseLeaveCard: () => void
   readonly onClick: () => void
-  readonly index: number
 }
 
-function getDaysUntil(dateStr: string): number {
-  const target = new Date(dateStr).getTime()
-  const now = Date.now()
-  return Math.ceil((target - now) / 86400000)
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr)
+  const now = new Date()
+  const diff = Math.ceil((date.getTime() - now.getTime()) / 86400000)
+  
+  if (diff < 0) return `${Math.abs(diff)}d overdue`
+  if (diff === 0) return 'Today'
+  if (diff === 1) return 'Tomorrow'
+  if (diff <= 7) return `${diff} days`
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-function getCountdownColor(days: number): string {
-  if (days < 0) return '#ff2d95'
-  if (days <= 3) return '#ffe66d'
-  return '#4a4a6a'
-}
-
-export function TaskCard({
-  task,
-  onDragStart,
-  onComplete,
-  onMouseEnterCard,
-  onMouseLeaveCard,
-  onClick,
-  index,
-}: TaskCardProps) {
+export function TaskCard({ task, onDragStart, onClick }: TaskCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
-  const glowColor = PRIORITY_COLORS[task.priority]
-  const daysLeft = getDaysUntil(task.dueDate)
-
-  useEffect(() => {
-    const el = cardRef.current
-    if (!el) return
-
-    gsap.fromTo(
-      el,
-      { opacity: 0, y: 20, scale: 0.95 },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.5,
-        ease: 'back.out(1.4)',
-        delay: 0.1 * index + 0.5,
-      }
-    )
-  }, [index])
-
-  const handleMouseEnter = () => {
-    const el = cardRef.current
-    if (!el) return
-
-    gsap.to(el, {
-      y: -4,
-      boxShadow: `0 8px 30px rgba(0,0,0,0.08), 0 0 15px ${glowColor}55`,
-      borderColor: glowColor,
-      duration: 0.3,
-      ease: 'power2.out',
-    })
-    onMouseEnterCard()
-  }
-
-  const handleMouseLeave = () => {
-    const el = cardRef.current
-    if (!el) return
-
-    gsap.to(el, {
-      y: 0,
-      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-      borderColor: 'rgba(157, 78, 221, 0.15)',
-      duration: 0.3,
-      ease: 'power2.out',
-    })
-    onMouseLeaveCard()
-  }
-
-  const handleDragStart = (e: React.DragEvent) => {
-    const el = cardRef.current
-    if (!el) return
-
-    gsap.to(el, {
-      rotation: 2,
-      scale: 1.05,
-      boxShadow: `0 20px 40px rgba(0,0,0,0.15), 0 0 25px ${glowColor}66`,
-      duration: 0.2,
-    })
-    onDragStart(e, task.id)
-  }
-
-  const handleDragEnd = () => {
-    const el = cardRef.current
-    if (!el) return
-
-    gsap.to(el, {
-      rotation: 0,
-      scale: 1,
-      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-      duration: 0.3,
-      ease: 'back.out(1.7)',
-    })
-  }
-
-  const handleDoubleClick = () => {
-    if (task.columnId !== 'done') return
-
-    const el = cardRef.current
-    if (!el) return
-
-    const rect = el.getBoundingClientRect()
-
-    const tl = gsap.timeline({
-      onComplete: () => onComplete(task.id, rect),
-    })
-
-    tl.to(el, { x: -3, duration: 0.04 })
-      .to(el, { x: 3, duration: 0.04 })
-      .to(el, { x: -2, filter: 'hue-rotate(90deg)', duration: 0.04 })
-      .to(el, { x: 2, filter: 'hue-rotate(-90deg)', duration: 0.04 })
-      .to(el, { x: 0, filter: 'hue-rotate(0deg)', duration: 0.04 })
-      .to(el, { opacity: 0, scale: 0.8, y: -10, duration: 0.3 })
-  }
+  const colors = PRIORITY_COLORS[task.priority]
 
   return (
     <div
       ref={cardRef}
-      className="group relative cursor-none border p-3 opacity-0"
-      style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
-        borderColor: 'rgba(157, 78, 221, 0.15)',
-        backdropFilter: 'blur(4px)',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-      }}
+      className="group rounded-lg border bg-white p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:border-gray-300"
+      style={{ borderColor: '#e5e5e5' }}
       draggable
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onDoubleClick={handleDoubleClick}
+      onDragStart={(e) => onDragStart(e, task.id)}
       onClick={onClick}
     >
-      <div className="mb-2 flex items-start justify-between">
-        <h3
-          className="font-mono text-xs font-medium leading-tight tracking-wide"
-          style={{ color: '#111827' }}
-        >
-          {task.title}
-        </h3>
-      </div>
+      {/* Title */}
+      <h3 className="mb-3 text-[15px] font-medium leading-snug text-gray-900">
+        {task.title}
+      </h3>
 
-      <div className="mb-2 flex items-center gap-2">
+      {/* Tags row */}
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        {/* Priority tag */}
         <span
-          className="inline-block rounded-sm px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-widest"
+          className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
           style={{
-            backgroundColor: `${glowColor}18`,
-            color: glowColor,
-            border: `1px solid ${glowColor}33`,
+            backgroundColor: colors.bg,
+            color: colors.text,
           }}
         >
-          {task.priority}
+          {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
         </span>
-        <span
-          className="font-mono text-[9px] tracking-wider"
-          style={{ color: getCountdownColor(daysLeft) }}
-        >
-          {daysLeft < 0 ? `OVERDUE ${Math.abs(daysLeft)}d` : `${daysLeft}d left`}
+
+        {/* Due date */}
+        <span className="inline-flex items-center gap-1 text-[13px] text-gray-500">
+          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          {formatDate(task.dueDate)}
         </span>
       </div>
 
-      <div className="mb-2 h-1 w-full overflow-hidden" style={{ backgroundColor: 'rgba(157,78,221,0.1)' }}>
-        <div
-          className="h-full transition-all duration-500"
-          style={{
-            width: `${task.progress}%`,
-            backgroundColor: glowColor,
-            boxShadow: `0 0 8px ${glowColor}88`,
-          }}
-        />
-      </div>
-
-      <div className="flex items-center justify-between">
-        <div
-          className="flex h-5 w-5 items-center justify-center rounded-full font-mono text-[8px] font-bold"
-          style={{
-            backgroundColor: `${glowColor}20`,
-            color: glowColor,
-            border: `1px solid ${glowColor}44`,
-          }}
-        >
-          {task.assignee}
+      {/* Progress bar */}
+      <div className="mb-3">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-xs text-gray-500">Progress</span>
+          <span className="text-xs font-medium text-gray-700">{task.progress}%</span>
         </div>
-        <span className="font-mono text-[8px] tracking-wider" style={{ color: '#7c3aed' }}>
-          {task.progress}%
-        </span>
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+          <div
+            className="h-full rounded-full transition-all duration-500"
+            style={{
+              width: `${task.progress}%`,
+              backgroundColor: task.progress === 100 ? '#10b981' : '#3b82f6',
+            }}
+          />
+        </div>
       </div>
 
-      <div
-        className="absolute top-0 right-0 h-0 w-0"
-        style={{
-          borderTop: `8px solid ${glowColor}44`,
-          borderLeft: '8px solid transparent',
-        }}
-      />
+      {/* Footer */}
+      <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+        <div className="flex items-center gap-2">
+          <div 
+            className="flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-medium text-white"
+            style={{ backgroundColor: '#6366f1' }}
+          >
+            {task.assignee.charAt(0)}
+          </div>
+          <span className="text-[13px] text-gray-600">{task.assignee}</span>
+        </div>
+        
+        {/* Hover indicator */}
+        <svg 
+          className="h-4 w-4 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </div>
     </div>
   )
 }

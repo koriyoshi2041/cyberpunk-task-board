@@ -1,56 +1,47 @@
 @import "tailwindcss";
 
 :root {
-  --bg-primary: #f8f9fa;
-  --bg-secondary: #eef1f5;
-  --cyber-pink: #ff2d95;
-  --cyber-cyan: #00d4d4;
-  --cyber-purple: #7c3aed;
-  --cyber-yellow: #f59e0b;
-  --glow-pink: 0 0 20px rgba(255, 45, 149, 0.4);
-  --glow-cyan: 0 0 20px rgba(0, 212, 212, 0.4);
-  --text-primary: #111827;
-  --text-secondary: #374151;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f7f7f5;
+  --bg-hover: #efefef;
+  --border-color: #e5e5e5;
+  --text-primary: #37352f;
+  --text-secondary: #6b6b6b;
+  --text-muted: #9b9b9b;
+  --accent-red: #eb5757;
+  --accent-purple: #9065e0;
+  --accent-blue: #2f80ed;
+  --accent-green: #6fcf97;
 }
 
 * {
-  cursor: none !important;
+  cursor: default;
 }
 
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  overflow-x: hidden;
-  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, 'Apple Color Emoji', Arial, sans-serif;
 }
 
 ::selection {
-  background: rgba(255, 45, 149, 0.25);
-  color: var(--text-primary);
+  background: rgba(45, 170, 219, 0.2);
 }
 
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(157, 78, 221, 0.3);
+  background: #d3d3d3;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(157, 78, 221, 0.5);
-}
-
-@keyframes flicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.8; }
-  75% { opacity: 0.95; }
-}
-
-.cyber-flicker {
-  animation: flicker 3s infinite;
+  background: #bbb;
 }

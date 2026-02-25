@@ -1,8 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
-import gsap from 'gsap'
+import { useState, useEffect } from 'react'
 import type { Task, Priority } from '../../types/task'
 import { PRIORITY_COLORS, COLUMNS } from '../../types/task'
-import { GlitchText } from './GlitchText'
 
 interface TaskModalProps {
   readonly task: Task | null
@@ -16,8 +14,6 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
   const [isEditing, setIsEditing] = useState(false)
   const [editedTask, setEditedTask] = useState<Partial<Task>>({})
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-  const modalRef = useRef<HTMLDivElement>(null)
-  const overlayRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (task) {
@@ -29,34 +25,17 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
         progress: task.progress,
       })
     }
+    setIsEditing(false)
+    setShowDeleteConfirm(false)
   }, [task])
 
   useEffect(() => {
-    if (isOpen && modalRef.current && overlayRef.current) {
-      gsap.fromTo(overlayRef.current, 
-        { opacity: 0 }, 
-        { opacity: 1, duration: 0.3 }
-      )
-      gsap.fromTo(modalRef.current,
-        { opacity: 0, scale: 0.9, y: 20 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: 'back.out(1.4)' }
-      )
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
     }
-  }, [isOpen])
-
-  const handleClose = () => {
-    if (modalRef.current && overlayRef.current) {
-      gsap.to(overlayRef.current, { opacity: 0, duration: 0.2 })
-      gsap.to(modalRef.current, { 
-        opacity: 0, scale: 0.95, y: 10, duration: 0.2,
-        onComplete: onClose
-      })
-    } else {
-      onClose()
-    }
-    setIsEditing(false)
-    setShowDeleteConfirm(false)
-  }
+    if (isOpen) window.addEventListener('keydown', handleEsc)
+    return () => window.removeEventListener('keydown', handleEsc)
+  }, [isOpen, onClose])
 
   const handleSave = () => {
     if (task && editedTask) {
@@ -68,83 +47,62 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
   const handleDelete = () => {
     if (task) {
       onDelete(task.id)
-      handleClose()
+      onClose()
     }
   }
 
   if (!isOpen || !task) return null
 
-  const glowColor = PRIORITY_COLORS[task.priority]
+  const colors = PRIORITY_COLORS[task.priority]
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Overlay */}
       <div
-        ref={overlayRef}
-        className="absolute inset-0 cursor-none"
-        style={{ backgroundColor: 'rgba(10, 10, 20, 0.8)' }}
-        onClick={handleClose}
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={onClose}
       />
 
       {/* Modal */}
-      <div
-        ref={modalRef}
-        className="relative w-full max-w-md cursor-none p-6"
-        style={{
-          backgroundColor: 'rgba(248, 249, 250, 0.95)',
-          border: `2px solid ${glowColor}`,
-          boxShadow: `0 0 30px ${glowColor}44, 0 25px 50px rgba(0,0,0,0.25)`,
-          backdropFilter: 'blur(10px)',
-        }}
-      >
+      <div className="relative w-full max-w-lg rounded-2xl bg-white shadow-2xl">
         {/* Header */}
-        <div className="mb-4 flex items-center justify-between border-b pb-3" style={{ borderColor: `${glowColor}33` }}>
-          <span className="font-mono text-xs font-bold uppercase tracking-widest" style={{ color: '#111827' }}>
-            <GlitchText>TASK_DETAILS</GlitchText>
-          </span>
+        <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
+          <h2 className="text-lg font-semibold text-gray-900">Task Details</h2>
           <button
-            onClick={handleClose}
-            className="font-mono text-lg transition-colors hover:text-[#ff2d95]"
-            style={{ color: '#374151' }}
+            onClick={onClose}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600"
           >
-            ×
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
 
         {/* Content */}
-        <div className="space-y-4">
+        <div className="space-y-5 px-6 py-5">
           {/* Title */}
           <div>
-            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest" style={{ color: '#374151' }}>
-              Title
-            </label>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">Title</label>
             {isEditing ? (
               <input
                 type="text"
                 value={editedTask.title || ''}
                 onChange={(e) => setEditedTask({ ...editedTask, title: e.target.value })}
-                className="w-full border bg-white px-3 py-2 font-mono text-sm focus:outline-none"
-                style={{ 
-                  borderColor: `${glowColor}44`,
-                  color: '#111827',
-                }}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-900 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
               />
             ) : (
-              <p className="font-mono text-sm font-medium" style={{ color: '#111827' }}>{task.title}</p>
+              <p className="text-base text-gray-900">{task.title}</p>
             )}
           </div>
 
           {/* Priority */}
           <div>
-            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest" style={{ color: '#374151' }}>
-              Priority
-            </label>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">Priority</label>
             {isEditing ? (
               <select
                 value={editedTask.priority || task.priority}
                 onChange={(e) => setEditedTask({ ...editedTask, priority: e.target.value as Priority })}
-                className="w-full border bg-white px-3 py-2 font-mono text-xs uppercase focus:outline-none"
-                style={{ borderColor: `${glowColor}44`, color: '#111827' }}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-900 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
               >
                 <option value="critical">Critical</option>
                 <option value="high">High</option>
@@ -153,39 +111,34 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
               </select>
             ) : (
               <span
-                className="inline-block rounded-sm px-2 py-1 font-mono text-[10px] uppercase tracking-widest"
-                style={{
-                  backgroundColor: `${glowColor}18`,
-                  color: glowColor,
-                  border: `1px solid ${glowColor}33`,
-                }}
+                className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
+                style={{ backgroundColor: colors.bg, color: colors.text }}
               >
-                {task.priority}
+                {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
               </span>
             )}
           </div>
 
           {/* Due Date */}
           <div>
-            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest" style={{ color: '#374151' }}>
-              Due Date
-            </label>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">Due Date</label>
             {isEditing ? (
               <input
                 type="date"
                 value={editedTask.dueDate || task.dueDate}
                 onChange={(e) => setEditedTask({ ...editedTask, dueDate: e.target.value })}
-                className="w-full border bg-white px-3 py-2 font-mono text-sm focus:outline-none"
-                style={{ borderColor: `${glowColor}44`, color: '#111827' }}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-900 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
               />
             ) : (
-              <p className="font-mono text-sm" style={{ color: '#111827' }}>{task.dueDate}</p>
+              <p className="text-gray-900">{new Date(task.dueDate).toLocaleDateString('en-US', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+              })}</p>
             )}
           </div>
 
           {/* Progress */}
           <div>
-            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest" style={{ color: '#374151' }}>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">
               Progress: {editedTask.progress ?? task.progress}%
             </label>
             {isEditing ? (
@@ -195,18 +148,13 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
                 max="100"
                 value={editedTask.progress ?? task.progress}
                 onChange={(e) => setEditedTask({ ...editedTask, progress: parseInt(e.target.value) })}
-                className="w-full"
-                style={{ accentColor: glowColor }}
+                className="w-full accent-violet-600"
               />
             ) : (
-              <div className="h-2 w-full overflow-hidden" style={{ backgroundColor: 'rgba(157,78,221,0.1)' }}>
+              <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
                 <div
-                  className="h-full"
-                  style={{
-                    width: `${task.progress}%`,
-                    backgroundColor: glowColor,
-                    boxShadow: `0 0 8px ${glowColor}88`,
-                  }}
+                  className="h-full rounded-full bg-violet-600 transition-all"
+                  style={{ width: `${task.progress}%` }}
                 />
               </div>
             )}
@@ -214,42 +162,37 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
 
           {/* Column */}
           <div>
-            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest" style={{ color: '#374151' }}>
-              Column
-            </label>
-            <p className="font-mono text-sm uppercase" style={{ color: '#111827' }}>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">Status</label>
+            <p className="text-gray-900">
               {COLUMNS.find(c => c.id === task.columnId)?.title || task.columnId}
             </p>
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="mt-6 flex items-center justify-between border-t pt-4" style={{ borderColor: `${glowColor}33` }}>
+        {/* Footer */}
+        <div className="flex items-center justify-between border-t border-gray-100 px-6 py-4">
           {showDeleteConfirm ? (
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[10px] uppercase text-[#ff2d95]">Confirm delete?</span>
+              <span className="text-sm text-red-600">Delete this task?</span>
               <button
                 onClick={handleDelete}
-                className="px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-white transition-all hover:scale-105"
-                style={{ backgroundColor: '#ff2d95' }}
+                className="rounded-lg bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-700"
               >
-                Yes
+                Yes, delete
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="px-3 py-1 font-mono text-[10px] uppercase tracking-wider transition-all hover:scale-105"
-                style={{ backgroundColor: '#374151', color: 'white' }}
+                className="rounded-lg bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200"
               >
-                No
+                Cancel
               </button>
             </div>
           ) : (
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="font-mono text-[10px] uppercase tracking-wider transition-colors hover:text-[#ff2d95]"
-              style={{ color: '#374151' }}
+              className="text-sm text-red-600 hover:text-red-700"
             >
-              [DELETE]
+              Delete task
             </button>
           )}
 
@@ -258,36 +201,27 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, onDelete }: TaskMod
               <>
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="px-4 py-2 font-mono text-[10px] uppercase tracking-wider transition-all hover:scale-105"
-                  style={{ backgroundColor: '#374151', color: 'white' }}
+                  className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSave}
-                  className="px-4 py-2 font-mono text-[10px] uppercase tracking-wider text-white transition-all hover:scale-105"
-                  style={{ backgroundColor: glowColor, boxShadow: `0 0 15px ${glowColor}44` }}
+                  className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
                 >
-                  Save
+                  Save changes
                 </button>
               </>
             ) : (
               <button
                 onClick={() => setIsEditing(true)}
-                className="px-4 py-2 font-mono text-[10px] uppercase tracking-wider text-white transition-all hover:scale-105"
-                style={{ backgroundColor: glowColor, boxShadow: `0 0 15px ${glowColor}44` }}
+                className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
               >
-                Edit
+                Edit task
               </button>
             )}
           </div>
         </div>
-
-        {/* Corner decorations */}
-        <div className="absolute top-0 left-0 h-3 w-3 border-t-2 border-l-2" style={{ borderColor: glowColor }} />
-        <div className="absolute top-0 right-0 h-3 w-3 border-t-2 border-r-2" style={{ borderColor: glowColor }} />
-        <div className="absolute bottom-0 left-0 h-3 w-3 border-b-2 border-l-2" style={{ borderColor: glowColor }} />
-        <div className="absolute bottom-0 right-0 h-3 w-3 border-b-2 border-r-2" style={{ borderColor: glowColor }} />
       </div>
     </div>
   )

@@ -1,27 +1,16 @@
-import { useRef, useState, useCallback } from 'react'
+import { useRef, useCallback } from 'react'
 import { useTaskStore } from '../../store/useTaskStore'
 import { COLUMNS } from '../../types/task'
 import type { Task, ColumnId, Priority } from '../../types/task'
 import { Column } from './Column'
-import { ParticleExplosion } from '../Effects/ParticleExplosion'
 
 interface BoardProps {
-  readonly onMouseEnterCard: () => void
-  readonly onMouseLeaveCard: () => void
   readonly onTaskClick: (task: Task) => void
 }
 
-interface Explosion {
-  readonly id: string
-  readonly x: number
-  readonly y: number
-  readonly color: string
-}
-
-export function Board({ onMouseEnterCard, onMouseLeaveCard, onTaskClick }: BoardProps) {
+export function Board({ onTaskClick }: BoardProps) {
   const { tasks, moveTask, deleteTask, addTask } = useTaskStore()
   const draggedTaskRef = useRef<string | null>(null)
-  const [explosions, setExplosions] = useState<readonly Explosion[]>([])
 
   const handleDragStart = useCallback((_e: React.DragEvent, taskId: string) => {
     draggedTaskRef.current = taskId
@@ -39,22 +28,11 @@ export function Board({ onMouseEnterCard, onMouseLeaveCard, onTaskClick }: Board
   )
 
   const handleComplete = useCallback(
-    (taskId: string, rect: DOMRect) => {
-      const explosion: Explosion = {
-        id: `explosion-${Date.now()}`,
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2,
-        color: '#ff2d95',
-      }
-      setExplosions((prev) => [...prev, explosion])
+    (taskId: string, _rect: DOMRect) => {
       deleteTask(taskId)
     },
     [deleteTask]
   )
-
-  const handleRemoveExplosion = useCallback((id: string) => {
-    setExplosions((prev) => prev.filter((e) => e.id !== id))
-  }, [])
 
   const handleAddTask = useCallback(
     (columnId: ColumnId, title: string, priority: Priority) => {
@@ -64,33 +42,19 @@ export function Board({ onMouseEnterCard, onMouseLeaveCard, onTaskClick }: Board
   )
 
   return (
-    <>
-      <div className="flex gap-4 overflow-x-auto p-6">
-        {COLUMNS.map((column) => (
-          <Column
-            key={column.id}
-            column={column}
-            tasks={tasks.filter((t) => t.columnId === column.id)}
-            onDragStart={handleDragStart}
-            onDrop={handleDrop}
-            onComplete={handleComplete}
-            onAddTask={handleAddTask}
-            onMouseEnterCard={onMouseEnterCard}
-            onMouseLeaveCard={onMouseLeaveCard}
-            onTaskClick={onTaskClick}
-          />
-        ))}
-      </div>
-
-      {explosions.map((exp) => (
-        <ParticleExplosion
-          key={exp.id}
-          x={exp.x}
-          y={exp.y}
-          color={exp.color}
-          onComplete={() => handleRemoveExplosion(exp.id)}
+    <div className="flex gap-6 overflow-x-auto px-6 pb-6">
+      {COLUMNS.map((column) => (
+        <Column
+          key={column.id}
+          column={column}
+          tasks={tasks.filter((t) => t.columnId === column.id)}
+          onDragStart={handleDragStart}
+          onDrop={handleDrop}
+          onComplete={handleComplete}
+          onAddTask={handleAddTask}
+          onTaskClick={onTaskClick}
         />
       ))}
-    </>
+    </div>
   )
 }
