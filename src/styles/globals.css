@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #f8f9fa;
+  --bg-secondary: #eef1f5;
+  --cyber-pink: #ff2d95;
+  --cyber-cyan: #00fff0;
+  --cyber-purple: #9d4edd;
+  --cyber-yellow: #ffe66d;
+  --glow-pink: 0 0 20px rgba(255, 45, 149, 0.4);
+  --glow-cyan: 0 0 20px rgba(0, 255, 240, 0.4);
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a6a;
+}
+
+* {
+  cursor: none !important;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+}
+
+::selection {
+  background: rgba(255, 45, 149, 0.25);
+  color: var(--text-primary);
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(157, 78, 221, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(157, 78, 221, 0.5);
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+  75% { opacity: 0.95; }
+}
+
+.cyber-flicker {
+  animation: flicker 3s infinite;
+}
